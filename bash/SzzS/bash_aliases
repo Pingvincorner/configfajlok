@@ -1,0 +1,8 @@
+alias drivelist='sudo lsblk -o name,size,label,fstype,uuid,model'
+alias fut-e='ps ax | egrep -v "grep \-E" | egrep'
+alias free='free -h'
+alias ls='/usr/bin/exa -F --color=auto'
+alias lsl='/usr/bin/exa -lgF --color=auto --time=modified --time-style=long-iso'
+alias grep='grep --color=auto'
+alias most='most -rw'
+alias less='less -RgiMn'
