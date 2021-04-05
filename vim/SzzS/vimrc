@@ -1,6 +1,7 @@
 " Status line-nak az airline csomagot használja.
-" sudo pacman -S --needed --noconfirm vim-airline vim-airline-themes
+" sudo pacman -S --needed --noconfirm vim-airline vim-airline-themes powerline-fonts
 
+scriptencoding utf-8
 set number
 syntax on
 set wildmenu
@@ -23,6 +24,7 @@ set termencoding=utf-8
 set t_Co=256
 set mouse=
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
 set nolist
 set listchars=eol:¬,tab:↹·,trail:⏼,extends:⍈,precedes:⍇,space:␣
 
