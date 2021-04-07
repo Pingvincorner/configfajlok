@@ -32,5 +32,13 @@ set listchars=eol:¬,tab:↹·,trail:⏼,extends:⍈,precedes:⍇,space:␣
 iab <expr> __VER strftime("# Verzió: %Y%m%d.%H%M")
 "CTRL+n -> set relative line numbers on/off
 nmap <C-n> :set invrelativenumber<CR>
-"CTRL-l (L) ->set list on/off
+"CTRL+l (L) ->set list on/off
 nmap <C-l> :set invlist<CR>
+"CTRL+f o Fold open
+nmap <C-f>o :foldopen<CR>
+"CTRL+f c Fold close
+nmap <C-f>c :foldclose<CR>
+"CTRL+f O Open all folds (max level 999)
+nmap <C-F>O :set foldlevel=999<CR>
+"CTRL+f C Close all folds
+nmap <C-F>C :set foldlevel=0<CR>
