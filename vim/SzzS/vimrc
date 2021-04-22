@@ -2,8 +2,10 @@
 " sudo pacman -S --needed --noconfirm vim-airline vim-airline-themes powerline-fonts
 
 scriptencoding utf-8
+set nocompatible
 set number
 syntax on
+filetype indent on
 set wildmenu
 set wildmode=list:longest
 set lazyredraw
@@ -12,9 +14,14 @@ set incsearch
 set hlsearch
 set cursorline
 hi CursorLine cterm=NONE ctermbg=darkblue ctermfg=white
+set cursorcolumn
+hi CursorColumn cterm=NONE ctermbg=darkgray ctermfg=white
+au InsertEnter * set nocursorline | set nocursorcolumn | redraw!
+au InsertLeave * set cursorline | set cursorcolumn | redraw!
 set noexpandtab
-set tabstop=8
-set softtabstop=8
+set tabstop=4
+set softtabstop=4
+set noexpandtab
 set ignorecase
 set ruler
 set laststatus=2
@@ -25,6 +32,7 @@ set t_Co=256
 set mouse=
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
+let g:airline_theme = "dark"
 set nolist
 set listchars=eol:¬,tab:↹·,trail:⏼,extends:⍈,precedes:⍇,space:␣
 
