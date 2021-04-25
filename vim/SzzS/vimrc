@@ -12,12 +12,12 @@ set lazyredraw
 set showmatch
 set incsearch
 set hlsearch
-set cursorline
 hi CursorLine cterm=NONE ctermbg=darkblue ctermfg=white
-set cursorcolumn
-hi CursorColumn cterm=NONE ctermbg=darkgray ctermfg=white
+hi CursorColumn cterm=NONE ctermbg=darkblue ctermfg=lightgray
 au InsertEnter * set nocursorline | set nocursorcolumn | redraw!
 au InsertLeave * set cursorline | set cursorcolumn | redraw!
+set cursorline
+set cursorcolumn
 set noexpandtab
 set tabstop=4
 set softtabstop=4
@@ -47,6 +47,8 @@ nmap <C-f>o :foldopen<CR>
 "CTRL+f c Fold close
 nmap <C-f>c :foldclose<CR>
 "CTRL+f O Open all folds (max level 999)
-nmap <C-F>O :set foldlevel=999<CR>
+nmap <C-f>O :set foldlevel=999<CR>
 "CTRL+f C Close all folds
-nmap <C-F>C :set foldlevel=0<CR>
+nmap <C-f>C :set foldlevel=0<CR>
+"Normál módban a 'rc' sorozat leütése újra beolvassa a vimrc fájlt.
+nnoremap rc :so $MYVIMRC<CR>
