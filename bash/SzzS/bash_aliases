@@ -1,8 +1,24 @@
-alias drivelist='sudo lsblk -o name,size,label,fstype,uuid,model'
-alias fut-e='ps ax | egrep -v "grep \-E" | egrep'
-alias free='free -h'
-alias ls='/usr/bin/exa -F --color=auto'
-alias lsl='/usr/bin/exa -lgF --color=auto --time=modified --time-style=long-iso'
-alias grep='grep --color=auto'
-alias most='most -rw'
-alias less='less -RgiMn'
+#####################################################################
+# Szükséges programok:
+# sudo pacman -Syu --needed --noconfirm pwgen neofetch scrot exa git
+#
+# yay AUR helper:
+# mkdir -p ~/GIT && cd ~/GIT
+# git clone https://aur.archlinux.org/yay-bin.git
+# cd ~/GIT/yay-bin
+# makepkg -si
+#####################################################################
+
+alias drivelist='lsblk -o name,size,label,fstype,model'
+alias jelszo='pwgen -s'
+alias fut-e='ps -e -o pid,euser,comm | egrep -i '
+alias syspng='clear && neofetch && scrot -uo ~/system-info.png && xdg-open ~/system-info.png'
+alias uptimes='echo -n "Bekapcsolás:"; uptime -s;echo -n "Futási idő: "; uptime -p'
+alias neofetch='clear; neofetch'
+alias less='less -NM'
+alias ls='exa -Fgm --time-style="long-iso"'
+alias myupdate='yay -Syu --sudoloop'
+alias cp='cp -v'
+alias mv='mv -v'
+alias chmod='chmod -v'
+alias ln='ln -vf'
