@@ -1,0 +1,22 @@
+sudo pacman --needed -Syu \
+	dunst \
+	pamixer \
+	numlockx \
+	xorg-xset \
+	picom \
+	nitrogen \
+	volumeicon \
+	termite \
+	termite-terminfo \
+	speedcrunch \
+	thunderbird \
+	thunderbird-i18n-hu \
+	firefox \
+	firefox-i18n-hu \
+	ttf-ubuntu-font-family \
+	ttf-font-awesome
+
+yay --needed -Syua \
+	clipit \
+	spotify \
+	nerd-fonts-mononoki
