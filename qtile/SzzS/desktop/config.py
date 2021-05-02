@@ -66,7 +66,7 @@ def WinToGroup(window):
                         window.group.cmd_toscreen(toggle=False)
 
 
-###+ Alkalmazásindító függvények
+###+ Egér kattintásra válaszoló függvények
 def CpuWidgetClicked():
     qtile.cmd_spawn( "$HOME/.config/qtile/bin/displaytopcpu.sh", shell=True )
 
@@ -115,7 +115,6 @@ keys = [
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Start ROFI"),
@@ -123,11 +122,10 @@ keys = [
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Aktív ablak lebegő mód be- kikapcsolása"),
 
     # Volumes
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("pamixer -i 5"), desc="Hangerő fel" ),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("pamixer -d 5"), desc="Hangerő le" ),
-    Key([], "XF86AudioMute", lazy.spawn("pamixer -t"), desc="Hangerő némítás" ),
-#   Key([], "XF86Tools", lazy.spawn("pavucontrol"), desc="Hangkeverő futtatása" ),
-    Key([], "XF86Tools", lazy.spawn("spotify"), desc="Spotify indítása" ),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn( HomePath + "/.config/qtile/bin/volctl fel" ), desc="Hangerő fel" ),
+    Key([], "XF86AudioLowerVolume", lazy.spawn( HomePath + "/.config/qtile/bin/volctl le" ), desc="Hangerő le" ),
+    Key([], "XF86AudioMute", lazy.spawn( HomePath + "/.config/qtile/bin/volctl kuss" ), desc="Hangerő némítás" ),
+    Key([], "XF86Tools", lazy.spawn("pavucontrol"), desc="Hangkeverő futtatása" ),
 
     # Spotify Multimedia
     Key([], "XF86AudioStop", lazy.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")),
@@ -169,17 +167,6 @@ layouts = [
                                 Match(wm_class='Ddoublecmd', title='Fájl(ok) mozgatása') #DoubleCommander
                                 ]
                     )
-    # Try more layouts by unleashing below layouts.
-    # layout.MonadTall( **common_layoutconfig ),
-    # layout.Stack(num_stacks=2),
-    #layout.Bsp( **common_layoutconfig ),
-    # layout.Matrix(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
 ]
 groups = [
             Group(name="1",label="\uf80b\uf17c",layout="columns"),
