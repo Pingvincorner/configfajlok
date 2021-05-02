@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#Paraméterek: fel / le / kuss / mennyi / mennyih
+
+[[ "$#" -gt 0 ]] && PARAMETER="$1" || PARAMETER="mennyi"
+
+
+case $PARAMETER in
+	fel)
+		strCOMMAND="pamixer --increase 5"	
+		;;
+	le)
+		strCOMMAND="pamixer --decrease 5"
+		;;
+	kuss)
+		strCOMMAND="pamixer --toggle-mute"
+		;;
+	mennyih)
+		strCOMMAND="pamixer --get-volume-human"
+		;;
+	*) #mennyi
+		strCOMMAND="pamixer --get-volume"
+		;;
+esac
+
+$strCOMMAND
+
+iLevel="$(pamixer --get-volume)"
+
+[[ "$(pamixer --get-mute)" ==  "true" || "$iLevel" == "0" ]] && intKUSSOL=1 || intKUSSOL=0
+
+if [[ intKUSSOL -eq 1 ]]; then
+	strUZENET=$(echo -e "\U0001F634 CSICSIKA")
+	strICON="audio-volume-muted"
+else
+	strUZENET="$(pamixer --get-volume-human)"
+	strICON="audio-volume-medium"
+fi
+  
+dunstify "Hangerő" "$strUZENET" -u normal -t 1000 -i $strICON -r 19700729
+
