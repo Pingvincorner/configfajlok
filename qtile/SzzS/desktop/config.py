@@ -163,8 +163,8 @@ layouts = [
                                 Match(wm_class='Gcolor3'),  # Gtk Color picker
                                 Match(wm_class='MEGAsync'),  # Megasync windows
                                 Match(wm_class='Doublecmd', title='Opciók'), #DoubleCommander
-                                Match(wm_class='Ddoublecmd', title='Fájl(ok) másolása'), #DoubleCommander
-                                Match(wm_class='Ddoublecmd', title='Fájl(ok) mozgatása') #DoubleCommander
+                                Match(wm_class='Doublecmd', title='Fájl(ok) másolása'), #DoubleCommander
+                                Match(wm_class='Doublecmd', title='Fájl(ok) mozgatása') #DoubleCommander
                                 ]
                     )
 ]
