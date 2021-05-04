@@ -128,10 +128,10 @@ keys = [
     Key([], "XF86Tools", lazy.spawn("pavucontrol"), desc="Hangkeverő futtatása" ),
 
     # Spotify Multimedia
-    Key([], "XF86AudioStop", lazy.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")),
-    Key([], "XF86AudioPrev", lazy.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")),
-    Key([], "XF86AudioPlay", lazy.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")),
-    Key([], "XF86AudioNext", lazy.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")),
+    Key([], "XF86AudioStop", lazy.spawn("playerctl stop")),
+    Key([], "XF86AudioPrev", lazy.spawn("playerctl previous")),
+    Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause")),
+    Key([], "XF86AudioNext", lazy.spawn("playerctl next")),
 #
     #F9-F12 (F11 nem használható: Kikapcsolja a Super4-et!)
     Key([], "XF86Mail", lazy.spawn("thunderbird")),
