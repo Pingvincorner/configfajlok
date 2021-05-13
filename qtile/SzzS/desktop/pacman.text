@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 sudo pacman --needed -Syu \
 	dunst \
 	firefox \
@@ -17,7 +19,7 @@ sudo pacman --needed -Syu \
 	volumeicon \
 	xorg-xset
 
-yay --needed -Syua \
+paru --needed -S \
 	clipit \
 	nerd-fonts-mononoki \
 	spotify
