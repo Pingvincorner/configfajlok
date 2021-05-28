@@ -37,13 +37,30 @@ from typing import List  # noqa: F401
 from libqtile.log_utils import logger
 
 mod = "mod4"
-myTerm = "termite"
+myTerm = "alacritty"
 HomePath = os.path.expanduser("~")
 
 # Autostart
+dirstopath = [ "$HOME/.local/bin" ]
+
+def AddPaths2Path():
+    PathIsChanged = False
+    JelenlegiUtvonalak = os.environ["PATH"].split(":")
+    for ujutvonal in dirstopath:
+        ujutvonal=os.path.expandvars(ujutvonal)
+        bSzerepel = ujutvonal in JelenlegiUtvonalak
+        if( bSzerepel == False ):
+            os.environ["PATH"] = "{0}:{1}".format(ujutvonal,os.environ["PATH"])
+            PathIsChanged = True
+        else:
+            logger.warning(f"A(z) '{ujutvonal}' útvonal már szerepel a PATH környezeti változóban.")
+    if( PathIsChanged == True ):
+        logger.warning("A PATH környezeti változó módosult:\n{0}".format(os.environ["PATH"]))
+
 @hook.subscribe.startup_once
 def autostart():
         autobash = HomePath + "/.config/qtile/autostart.sh"
+        AddPaths2Path()
         logger.warning(f"Executing autostart file {autobash}")
         subprocess.call([autobash])
 
@@ -52,18 +69,21 @@ wintogroup_rules={
                     "Steam": "4",
                     "Lutris": "4",
                     "Edmarketconnector": "4",
-                    "discord": "5",
-                    "Spotify": "6",
-                    "KeePassXC": "7"
+#                   "Spotify": "6", #A Spotify-ra sajna sehogy nem akar működni...
+                    "VirtualBox Machine": "8"
                     }
 
 @hook.subscribe.client_new
 def WinToGroup(window):
-        wClass = window.window.get_wm_class()[1]
-        for app in wintogroup_rules.keys():
-                if wClass in app:
-                        window.togroup(wintogroup_rules[wClass])
+        try:
+            wClass = window.window.get_wm_class()
+            if( wClass != None and len(wClass) > 0 ):
+                for app in wintogroup_rules.keys():
+                    if wClass[1] in app:
+                        window.togroup(wintogroup_rules[wClass[1]])
                         window.group.cmd_toscreen(toggle=False)
+        except Exception as e:
+                logger.error(f"WinToGroup ERROR: {e}")
 
 
 ###+ Egér kattintásra válaszoló függvények
@@ -76,6 +96,9 @@ def MemoryWidgetClicked():
 def CalendarWidgetClicked():
     bashScript = HomePath + "/.config/qtile/bin/showcalendar.sh"
     qtile.cmd_spawn( [myTerm,"-e",bashScript] )
+
+def ShowWindowsList():
+    qtile.cmd_spawn("rofi -show window")
 ###-
 
 keys = [
@@ -117,7 +140,9 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod], "Escape", lazy.spawn(HomePath+"/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
     Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Start ROFI"),
+    Key([mod, "shift"], "r", lazy.spawn( "rofi -show run" ), desc="Start ROFI with commands list"),
     Key(["mod1"], "Tab", lazy.spawn("rofi -show window"), desc="Start ROFI"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Aktív ablak lebegő mód be- kikapcsolása"),
 
@@ -173,9 +198,10 @@ groups = [
             Group(name="2",label="\uf80c\uf17c",layout="columns"),
             Group(name="3",label="\uf80d\uf17c",layout="columns"),
             Group(name="4",label="\uf80e\uf1b6", layout="floating"), #GAMES
-            Group(name="5",label="\uf80f\uf392",layout="columns"), #Discord
-            Group(name="6",label="\uf810\uf1bc",layout="columns"), #Spotify
-            Group(name="7",label="\uf811\ue60a",layout="columns"), #KeepassXC
+            Group(name="5",label="\uf80f\uf392",layout="columns",matches=[Match(wm_class="discord")]), #Discord
+            Group(name="6",label="\uf810\uf1bc",layout="columns",matches=[Match(title="Spotify Premium")]), #Spotify
+            Group(name="7",label="\uf811\ue60a",layout="columns",matches=[Match(wm_class="KeePassXC")]), #KeepassXC
+            Group(name="8",label="\uf812\uf009",layout="max") #Virtualbox Machine
         ]
 
 for i in groups:
@@ -194,7 +220,7 @@ for i in groups:
 
 bar_parameters=dict(
                 background="#000000",
-                margin=[10,20,0,20],
+                margin=[10,20,8,20],
                 opacity=1
                 )
 
@@ -205,11 +231,10 @@ widget_defaults = dict(
     foreground="#ffffff",
     background="#000000"
 )
+
 extension_defaults = widget_defaults.copy()
-
 separator_default = dict(padding=10,linewidth=2,size_percent=60,foreground=["#000000","#136ccb"])
-
-textbox_forecolor = "#b3d2e4"
+textbox_forecolor = "#5a7cd3"
 
 screens = [
     Screen(
@@ -227,7 +252,10 @@ screens = [
                 ),
                 widget.Sep( **separator_default ),
 ### Widget Task List 
-                widget.TextBox( text="\uf2d2", foreground=textbox_forecolor),
+                widget.TextBox( text="\uf2d2",
+                        foreground=textbox_forecolor,
+                        mouse_callbacks = { 'Button1': ShowWindowsList }
+                        ),
                 widget.TaskList(
                         fontsize=14,
                         margin_y=4,
@@ -242,8 +270,7 @@ screens = [
                         ),
                 widget.Sep( **separator_default ),
 ### Widget Layout Display
-                widget.CurrentLayoutIcon( scale= 0.5, foreground=textbox_forecolor ),
-                widget.CurrentLayout( ),
+                widget.CurrentLayout( foreground=textbox_forecolor ),
                 widget.Sep( **separator_default ),
 ### Widget Clock
                 widget.TextBox(
@@ -256,7 +283,7 @@ screens = [
                             ),
                 widget.Sep( **separator_default ),
 ### Widget CPU Sensor
-                widget.TextBox( text="\ue350", foreground=textbox_forecolor ),
+                widget.TextBox( text="\uf2c9", foreground=textbox_forecolor ),
                 widget.ThermalSensor(
                                 foreground_alert="ff0000",
                                 treshold=80,
@@ -267,7 +294,7 @@ screens = [
                 widget.Sep( **separator_default ),
 ### Widget.Memory
                 widget.TextBox(
-                                text="\uf145", foreground=textbox_forecolor,
+                                text="\uf837", foreground=textbox_forecolor,
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
                 widget.Memory(
@@ -278,7 +305,7 @@ screens = [
                 widget.Sep( **separator_default ),
 ### Widget Systray
                 widget.Spacer( length=6 ),
-                widget.Systray( padding=3 ),
+                widget.Systray( padding=4 ),
                 widget.Spacer( length=6 ),
 ### Widget Quit
                 widget.Spacer( background="5E0A00", length=3 ),

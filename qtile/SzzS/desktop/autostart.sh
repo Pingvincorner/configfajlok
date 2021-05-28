@@ -1,4 +1,6 @@
 #!/bin/bash
+setxkbmap hu &
+xdb -merge ~/.Xresources &
 xset -dpms s off &
 numlockx on &
 picom -b
