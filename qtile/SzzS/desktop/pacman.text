@@ -10,8 +10,7 @@ sudo pacman --needed -Syu \
 	picom \
 	playerctl \
 	speedcrunch \
-	termite \
-	termite-terminfo \
+	alacritty \
 	thunderbird \
 	thunderbird-i18n-hu \
 	ttf-font-awesome \
