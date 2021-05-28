@@ -140,15 +140,15 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "Escape", lazy.spawn(HomePath+"/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
+    Key([mod], "Escape", lazy.spawn(HomePath+"/.config/qtile/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
     Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Start ROFI"),
     Key([mod, "shift"], "r", lazy.spawn( "rofi -show run" ), desc="Start ROFI with commands list"),
     Key(["mod1"], "Tab", lazy.spawn("rofi -show window"), desc="Start ROFI"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Aktív ablak lebegő mód be- kikapcsolása"),
 
     # Volumes
-    Key([], "XF86AudioRaiseVolume", lazy.spawn( HomePath + "/.config/qtile/bin/volctl fel" ), desc="Hangerő fel" ),
-    Key([], "XF86AudioLowerVolume", lazy.spawn( HomePath + "/.config/qtile/bin/volctl le" ), desc="Hangerő le" ),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn( HomePath+"/.config/qtile/bin/volctl fel" ), desc="Hangerő fel" ),
+    Key([], "XF86AudioLowerVolume", lazy.spawn( HomePath+"/.config/qtile/bin/volctl le" ), desc="Hangerő le" ),
     Key([], "XF86AudioMute", lazy.spawn( HomePath + "/.config/qtile/bin/volctl kuss" ), desc="Hangerő némítás" ),
     Key([], "XF86Tools", lazy.spawn("pavucontrol"), desc="Hangkeverő futtatása" ),
 

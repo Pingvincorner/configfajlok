@@ -21,4 +21,5 @@ sudo pacman --needed -Syu \
 paru --needed -S \
 	clipit \
 	nerd-fonts-mononoki \
+	rofi-power-menu \
 	spotify
