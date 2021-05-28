@@ -1,0 +1,64 @@
+Xft.dpi: 109
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: false
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+
+XTerm*renderFont: true
+XTerm*faceName: xft:Ubuntu Mono
+XTerm*faceSize: 14
+XTerm*utf8: 2
+XTerm*locale: true
+
+XTerm.vt100.translations: #override \n\
+  Ctrl <Key> j: smaller-vt-font() \n\
+  Ctrl <Key> k: larger-vt-font()
+
+
+! Every shell is a login shell by default (for inclusion of all necessary environment variables)
+XTerm*loginshell: true
+
+! I like a LOT of scrollback...
+XTerm*savelines: 16384
+
+! double-click to select whole URLs :D
+XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+
+! special
+*.foreground:   #dddddd
+*.background:   #222222
+*.cursorColor:  #dddddd
+
+! black
+*.color0:       #191919
+*.color8:       #252525
+
+! red
+*.color1:       #803232
+*.color9:       #982b2b
+
+! green
+*.color2:       #5b762f
+*.color10:      #89b83f
+
+! yellow
+*.color3:       #aa9943
+*.color11:      #efef60
+
+! blue
+*.color4:       #324c80
+*.color12:      #2b4f98
+
+! magenta
+*.color5:       #706c9a
+*.color13:      #826ab1
+
+! cyan
+*.color6:       #92b19e
+*.color14:      #a1cdcd
+
+! white
+*.color7:       #ffffff
+*.color15:      #dddddd
