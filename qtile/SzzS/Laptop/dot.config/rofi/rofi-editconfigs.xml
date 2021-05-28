@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<editables sorting="True" showfilepath="False" terminalapp="lxterminal" terminalswitch="-e" editor="/usr/bin/vim">
-	<edit name="RofiEdit - rofi-editconfigs.xml" sudo="False">$HOME/.config/rofi/rofi-editconfigs.xml</edit>
-	<edit name="Rofi - config.rasi" sudo="False">$HOME/.config/rofi/config.rasi</edit>
-	<edit name="QTile - config.py" sudo="False">$HOME/.config/qtile/config.py</edit>
-</editables>
