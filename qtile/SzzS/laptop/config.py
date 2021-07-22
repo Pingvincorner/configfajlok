@@ -37,18 +37,18 @@ from typing import List  # noqa: F401
 
 mod = "mod4"
 myTerm = "lxterminal"
-
+HomePath = os.path.expanduser("~")
 
 # Autostart
 @hook.subscribe.startup_once
 def autostart():
-    autobash = os.path.expanduser("~/bin/autostart.sh")
+    autobash = HomePath + "/bin/autostart.sh"
     subprocess.call([autobash])
 
 
 ###+ Alkalmazásindító függvények
 def ShowRofi_Editors(qtile):
-    qtile.cmd_spawn("python " + os.path.expanduser("~/bin/rofi-scripts/rofi-editconfigs.py") )
+    qtile.cmd_spawn("python " + HomePath + "/bin/rofi-scripts/rofi-editconfigs.py") )
 
 def ShowNetworkConnectionEditor(qtile):
     qtile.cmd_spawn(myTerm + " -t 'Edit Network Connections' -e 'sleep 0.5; nmtui-edit'")
@@ -127,7 +127,7 @@ groups = [Group(i) for i in "1234"]
 for i in groups:
     keys.extend([
         # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen(),
+        Key([mod], i.name, lazy.group[i.name].toscreen(toggle=False),
             desc="Switch to group {}".format(i.name)),
 
         # mod1 + shift + letter of group = switch to & move focused window to group
@@ -275,7 +275,7 @@ screens = [
                 widget.Memory(
                                 background="000d4e",
                                 foreground="ffffff",
-                                format="{MemUsed} MB",
+                                format="{MemUsed: 0.f} MB",
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
 ### Widget Battery
