@@ -88,10 +88,10 @@ def WinToGroup(window):
 
 ###+ Egér kattintásra válaszoló függvények
 def CpuWidgetClicked():
-    qtile.cmd_spawn( "$HOME/.config/qtile/bin/displaytopcpu.sh", shell=True )
+    qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopcpu.sh", shell=True )
 
 def MemoryWidgetClicked():
-    qtile.cmd_spawn( "$HOME/.config/qtile/bin/displaytopmemory.sh", shell=True )
+    qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopmemory.sh", shell=True )
 
 def CalendarWidgetClicked():
     bashScript = HomePath + "/.config/qtile/bin/showcalendar.sh"
@@ -298,7 +298,7 @@ screens = [
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
                 widget.Memory(
-                                format="{MemUsed} MB",
+                                format="{MemUsed: .0f} MB",
                                 update_interval=2,
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
