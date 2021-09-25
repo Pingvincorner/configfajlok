@@ -2,24 +2,20 @@
 
 sudo pacman --needed -Syu \
 	dunst \
-	firefox \
-	firefox-i18n-hu \
+	gsimplecal \
 	nitrogen \
 	numlockx \
 	pamixer \
 	picom \
 	playerctl \
-	speedcrunch \
-	alacritty \
-	thunderbird \
-	thunderbird-i18n-hu \
-	ttf-font-awesome \
-	ttf-ubuntu-font-family \
+	polkit \
+	polkit-gnome \
+	util-linux \
 	volumeicon \
+	xorg-xrandr \
 	xorg-xset
 
 paru --needed -S \
 	clipit \
-	nerd-fonts-mononoki \
+	nerd-fonts-jetbrains-mono \
 	rofi-power-menu \
-	spotify

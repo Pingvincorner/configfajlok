@@ -38,33 +38,20 @@ from libqtile.log_utils import logger
 
 mod = "mod4"
 myTerm = "alacritty"
+guiEditor = "/usr/bin/subl"
+guiFileman = "/usr/bin/pcmanfm"
+
 HomePath = os.path.expanduser("~")
+QtileConfigDir = HomePath + "/.config/qtile"
+QtileScriptsDir = QtileConfigDir + "/bin"
 
 # Autostart
-dirstopath = [ "$HOME/.local/bin" ]
-
-def AddPaths2Path():
-    PathIsChanged = False
-    JelenlegiUtvonalak = os.environ["PATH"].split(":")
-    for ujutvonal in dirstopath:
-        ujutvonal=os.path.expandvars(ujutvonal)
-        bSzerepel = ujutvonal in JelenlegiUtvonalak
-        if( bSzerepel == False ):
-            os.environ["PATH"] = "{0}:{1}".format(ujutvonal,os.environ["PATH"])
-            PathIsChanged = True
-        else:
-            logger.warning(f"A(z) '{ujutvonal}' útvonal már szerepel a PATH környezeti változóban.")
-    if( PathIsChanged == True ):
-        logger.warning("A PATH környezeti változó módosult:\n{0}".format(os.environ["PATH"]))
-
 @hook.subscribe.startup_once
 def autostart():
-        autobash = HomePath + "/.config/qtile/autostart.sh"
-        AddPaths2Path()
-        logger.warning(f"Executing autostart file {autobash}")
+        autobash = QtileScriptsDir + "/autostart.sh"
+#       logger.warning(f"Executing autostart file {autobash}")
         subprocess.call([autobash])
 
-#Új ablakok létrejöttekor lefutó függvény, ami figyeli a speckó alkalmazások elhelyezését
 wintogroup_rules={
                     "Steam": "4",
                     "Lutris": "4",
@@ -73,6 +60,7 @@ wintogroup_rules={
                     "VirtualBox Machine": "8"
                     }
 
+#Új ablakok létrejöttekor lefutó függvény, ami figyeli a speckó alkalmazások elhelyezését
 @hook.subscribe.client_new
 def WinToGroup(window):
         try:
@@ -85,6 +73,16 @@ def WinToGroup(window):
         except Exception as e:
                 logger.error(f"WinToGroup ERROR: {e}")
 
+#Ablak váltásnál megnézzük, hogy a fókusszal rendelkező ablak lebegő-e.
+#Ha igen, akkor az előtérbe hozzuk. Ez alaból nem történik meg sajnos.
+@hook.subscribe.client_focus
+def FloatWinToFront(window):
+    try:
+        wInfo = window.info()
+        if( wInfo['floating'] == True):
+            window.cmd_bring_to_front()
+    except Exception as e:
+        logger.error(f"FloatWinToFront ERROR: {e}")
 
 ###+ Egér kattintásra válaszoló függvények
 def CpuWidgetClicked():
@@ -94,8 +92,7 @@ def MemoryWidgetClicked():
     qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopmemory.sh", shell=True )
 
 def CalendarWidgetClicked():
-    bashScript = HomePath + "/.config/qtile/bin/showcalendar.sh"
-    qtile.cmd_spawn( [myTerm,"-e",bashScript] )
+    qtile.cmd_spawn( ["gsimplecal"] )
 
 def ShowWindowsList():
     qtile.cmd_spawn("rofi -show window")
@@ -131,19 +128,13 @@ keys = [
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split(),
-        desc="Toggle between split and unsplit sides of stack"),
-    Key([mod], "Return", lazy.spawn(myTerm), desc="Launch terminal"),
+    Key([mod, "shift"], "Return", lazy.layout.toggle_split(),desc="Toggle between split and unsplit sides of stack"),
 
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "Escape", lazy.spawn(HomePath+"/.config/qtile/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
-    Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Start ROFI"),
-    Key([mod, "shift"], "r", lazy.spawn( "rofi -show run" ), desc="Start ROFI with commands list"),
-    Key(["mod1"], "Tab", lazy.spawn("rofi -show window"), desc="Start ROFI"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Aktív ablak lebegő mód be- kikapcsolása"),
 
     # Volumes
@@ -157,24 +148,38 @@ keys = [
     Key([], "XF86AudioPrev", lazy.spawn("playerctl previous")),
     Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause")),
     Key([], "XF86AudioNext", lazy.spawn("playerctl next")),
-#
+
     #F9-F12 (F11 nem használható: Kikapcsolja a Super4-et!)
     Key([], "XF86Mail", lazy.spawn("thunderbird")),
     Key([], "XF86HomePage", lazy.spawn("firefox")),
     Key([], "XF86Calculator", lazy.spawn("speedcrunch")),
+
+    #Programok indítása
+    Key([mod, "control"], "k", lazy.spawn("xkill"), desc="XKILL indítása beragadt ablak kilövéséhez"),
+    Key([mod], "Return", lazy.spawn(myTerm), desc="Launch terminal"),
+    Key([mod], "e", lazy.spawn(guiEditor), desc="Grafikus szövegszerkesztő indítása"),
+    Key([mod], "f", lazy.spawn(guiFileman), desc="Grafikus fájlkezelő indítása"),
+    #++ROFI
+    Key([mod], "Escape", lazy.spawn(HomePath+"/.config/qtile/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
+    Key([mod], "r", lazy.spawn("rofi -modi drun,run -show drun"), desc="Start ROFI with desktop file list"),
+    Key(["mod1"], "Tab", lazy.spawn("rofi -modi window -show window"), desc="ROFI Alt-Tab Window list"),
+    #--ROFI
 ]
 
 
-common_layoutconfig = dict( border_focus_stack='#4e82dd',
-                            border_focus='#4e82dd',
-                            border_width=3,
+common_layoutconfig = dict( border_focus_stack='#EB3E19',
+                            border_focus='#EB3E19',
+                            border_normal='#414253',
+                            border_normal_stack='#414253',
+                            border_on_single=False,
+                            border_width=2,
                             margin=8
                         )
 
 layouts = [
     layout.Columns( **common_layoutconfig ),
     layout.Max(),
-    layout.Floating( border_focus='#6B4EDD', border_width=3,
+    layout.Floating( border_focus='#6B4EDD', border_width=2,
                     float_rules=[
                                 # Run the utility of `xprop` to see the wm class and name of an X client.
                                 *layout.Floating.default_float_rules,
@@ -187,21 +192,19 @@ layouts = [
                                 Match(wm_class='Gpick'),  # Gtk Color picker
                                 Match(wm_class='Gcolor3'),  # Gtk Color picker
                                 Match(wm_class='MEGAsync'),  # Megasync windows
-                                Match(wm_class='Doublecmd', title='Opciók'), #DoubleCommander
-                                Match(wm_class='Doublecmd', title='Fájl(ok) másolása'), #DoubleCommander
-                                Match(wm_class='Doublecmd', title='Fájl(ok) mozgatása') #DoubleCommander
+                                Match(wm_class='SpeedCrunch')
                                 ]
                     )
 ]
 groups = [
-            Group(name="1",label="\uf80b\uf17c",layout="columns"),
-            Group(name="2",label="\uf80c\uf17c",layout="columns"),
-            Group(name="3",label="\uf80d\uf17c",layout="columns"),
-            Group(name="4",label="\uf80e\uf1b6", layout="floating"), #GAMES
-            Group(name="5",label="\uf80f\uf392",layout="columns",matches=[Match(wm_class="discord")]), #Discord
-            Group(name="6",label="\uf810\uf1bc",layout="columns",matches=[Match(title="Spotify Premium")]), #Spotify
-            Group(name="7",label="\uf811\ue60a",layout="columns",matches=[Match(wm_class="KeePassXC")]), #KeepassXC
-            Group(name="8",label="\uf812\uf009",layout="max") #Virtualbox Machine
+            Group(name="1",label="1🐧",layout="columns"),
+            Group(name="2",label="2🐧",layout="columns"),
+            Group(name="3",label="3🐧",layout="columns"),
+            Group(name="4",label="4🎮", layout="floating"), #GAMES
+            Group(name="5",label="5🗣",layout="columns",matches=[Match(wm_class="discord")]), #Discord
+            Group(name="6",label="6🎼",layout="columns",matches=[Match(title="Spotify Premium")]), #Spotify
+            Group(name="7",label="7🔐",layout="columns",matches=[Match(wm_class="KeePassXC")]), #KeepassXC
+            Group(name="8",label="8💻",layout="max") #Virtualbox Machine
         ]
 
 for i in groups:
@@ -220,12 +223,12 @@ for i in groups:
 
 bar_parameters=dict(
                 background="#000000",
-                margin=[10,20,8,20],
-                opacity=1
+                margin=[10,20,5,20],
+                opacity=1.0
                 )
 
 widget_defaults = dict(
-    font='Ubuntu',
+    font='JetBrainsMono Nerd Font Mono',
     fontsize=16,
     padding=2,
     foreground="#ffffff",
@@ -233,14 +236,14 @@ widget_defaults = dict(
 )
 
 extension_defaults = widget_defaults.copy()
-separator_default = dict(padding=10,linewidth=2,size_percent=60,foreground=["#000000","#136ccb"])
+separator_default = dict(padding=10,linewidth=2,size_percent=80,foreground=["#000000","#136ccb"])
 textbox_forecolor = "#5a7cd3"
 
 screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.Spacer( length=6 ),
+                widget.Spacer( length=10 ),
 ### Widget Virtual Desktops
                 widget.GroupBox(
                     block_highlight_text_color="#8bd6ff",
@@ -252,7 +255,7 @@ screens = [
                 ),
                 widget.Sep( **separator_default ),
 ### Widget Task List 
-                widget.TextBox( text="\uf2d2",
+                widget.TextBox( text="🪟",
                         foreground=textbox_forecolor,
                         mouse_callbacks = { 'Button1': ShowWindowsList }
                         ),
@@ -274,7 +277,7 @@ screens = [
                 widget.Sep( **separator_default ),
 ### Widget Clock
                 widget.TextBox(
-                                text="\uf073", foreground=textbox_forecolor,
+                                text="📆 ", foreground=textbox_forecolor,
                                 mouse_callbacks = { 'Button1': CalendarWidgetClicked }
                             ),
                 widget.Clock(
@@ -283,7 +286,7 @@ screens = [
                             ),
                 widget.Sep( **separator_default ),
 ### Widget CPU Sensor
-                widget.TextBox( text="\uf2c9", foreground=textbox_forecolor ),
+                widget.TextBox( text="🌡", foreground=textbox_forecolor ),
                 widget.ThermalSensor(
                                 foreground_alert="ff0000",
                                 treshold=80,
@@ -294,7 +297,7 @@ screens = [
                 widget.Sep( **separator_default ),
 ### Widget.Memory
                 widget.TextBox(
-                                text="\uf837", foreground=textbox_forecolor,
+                                text="🧠", foreground=textbox_forecolor,
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
                 widget.Memory(
@@ -312,7 +315,7 @@ screens = [
                 widget.QuickExit(
                                     background="5E0A00",
                                     foreground="FFAEA4",
-                                    default_text=" \uf011 ",
+                                    default_text=" 🗝 ",
                                     countdown_format=" {} "
                                 ),
                 widget.Spacer( background="5E0A00", length=3 ),
@@ -349,4 +352,6 @@ focus_on_window_activation = "smart"
 #
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
-wmname = "LG3D"
+#wmname = "LG3D"
+
+wmname = "QTile"

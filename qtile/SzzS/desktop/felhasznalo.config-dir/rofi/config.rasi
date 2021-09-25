@@ -1,0 +1,18 @@
+/*
+	Telepített összetevők (Arch Linux csomagnevek):
+		font:  aur/nerd-fonts-jetbrains-mono
+*/
+configuration {
+	font: "JetBrainsMono Nerd Font Mono Medium 18";
+	show-icons: true;
+	disable-history: true;
+	sort: true;
+	sorting-method: "normal";
+	case-sensitive: false;
+	parse-hosts: false;
+	parse-known-hosts: false;
+	theme: "Arc-Dark";
+	display-run: "Futtatás";
+	display-drun: "Program";
+	display-window: "Ablak";
+}
