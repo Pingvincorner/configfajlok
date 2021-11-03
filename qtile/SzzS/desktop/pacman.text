@@ -3,6 +3,7 @@
 sudo pacman --needed -Syu \
 	dunst \
 	gsimplecal \
+	lxappearance \
 	nitrogen \
 	numlockx \
 	pamixer \
@@ -18,4 +19,5 @@ sudo pacman --needed -Syu \
 paru --needed -S \
 	clipit \
 	nerd-fonts-jetbrains-mono \
-	rofi-power-menu \
+	rofi-power-menu
+	
