@@ -40,6 +40,7 @@ mod = "mod4"
 myTerm = "alacritty"
 guiEditor = "/usr/bin/subl"
 guiFileman = "/usr/bin/pcmanfm"
+wwwBrowser = "/usr/bin/vivaldi-stable"
 
 HomePath = os.path.expanduser("~")
 QtileConfigDir = HomePath + "/.config/qtile"
@@ -53,11 +54,9 @@ def autostart():
         subprocess.call([autobash])
 
 wintogroup_rules={
-                    "Steam": "4",
-                    "Lutris": "4",
-                    "Edmarketconnector": "4",
-#                   "Spotify": "6", #A Spotify-ra sajna sehogy nem akar működni...
-                    "VirtualBox Machine": "8"
+                    "discord": "8",
+                    "KeePassXC": "8",
+                    "VirtualBox Machine": "9"
                     }
 
 #Új ablakok létrejöttekor lefutó függvény, ami figyeli a speckó alkalmazások elhelyezését
@@ -69,7 +68,7 @@ def WinToGroup(window):
                 for app in wintogroup_rules.keys():
                     if wClass[1] in app:
                         window.togroup(wintogroup_rules[wClass[1]])
-                        window.group.cmd_toscreen(toggle=False)
+#                        window.group.cmd_toscreen(toggle=False)
         except Exception as e:
                 logger.error(f"WinToGroup ERROR: {e}")
 
@@ -86,17 +85,33 @@ def FloatWinToFront(window):
 
 ###+ Egér kattintásra válaszoló függvények
 def CpuWidgetClicked():
-    qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopcpu.sh", shell=True )
+    #qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopcpu.sh", shell=True )
+    qtile.cmd_spawn( "alacritty -e htop", shell=False )
 
 def MemoryWidgetClicked():
-    qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopmemory.sh", shell=True )
+    #qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopmemory.sh", shell=True )
+    qtile.cmd_spawn( "alacritty -e htop", shell=False )
 
 def CalendarWidgetClicked():
     qtile.cmd_spawn( ["gsimplecal"] )
 
-def ShowWindowsList():
-    qtile.cmd_spawn("rofi -show window")
-###-
+def ClockWidgetClicked():
+    qtile.cmd_spawn( ["xclock"] )
+
+def ShowWindowsListCallback():
+    ShowWindowsList(qtile)
+
+def ShowWindowsList(qtile):
+    qtile.cmd_spawn("rofi -modi window -show window")
+
+def GetMusicTitle():
+    sTitleText=""
+    try:
+        sTitleText=subprocess.check_output(HomePath+"/.config/qtile/bin/getmusic.sh").decode("utf-8").strip()
+    except subprocess.CalledProcessError:
+        sTitleText = "♬"
+    return sTitleText
+###
 
 keys = [
     # Switch between windows
@@ -151,7 +166,7 @@ keys = [
 
     #F9-F12 (F11 nem használható: Kikapcsolja a Super4-et!)
     Key([], "XF86Mail", lazy.spawn("thunderbird")),
-    Key([], "XF86HomePage", lazy.spawn("firefox")),
+    Key([], "XF86HomePage", lazy.spawn(wwwBrowser)),
     Key([], "XF86Calculator", lazy.spawn("speedcrunch")),
 
     #Programok indítása
@@ -162,49 +177,34 @@ keys = [
     #++ROFI
     Key([mod], "Escape", lazy.spawn(HomePath+"/.config/qtile/bin/rofi-power.sh"), desc="Rofi Shutdown Menu"),
     Key([mod], "r", lazy.spawn("rofi -modi drun,run -show drun"), desc="Start ROFI with desktop file list"),
-    Key(["mod1"], "Tab", lazy.spawn("rofi -modi window -show window"), desc="ROFI Alt-Tab Window list"),
+    Key(["mod1"], "Tab", lazy.function(ShowWindowsList), desc="ROFI Alt-Tab Window list"),
     #--ROFI
 ]
 
 
 common_layoutconfig = dict( border_focus_stack='#EB3E19',
                             border_focus='#EB3E19',
-                            border_normal='#414253',
-                            border_normal_stack='#414253',
-                            border_on_single=False,
-                            border_width=2,
+                            border_normal='#151a2b',
+                            border_normal_stack='#151a2b',
+                            border_on_single=True,
+                            border_width=3,
                             margin=8
                         )
 
 layouts = [
     layout.Columns( **common_layoutconfig ),
-    layout.Max(),
-    layout.Floating( border_focus='#6B4EDD', border_width=2,
-                    float_rules=[
-                                # Run the utility of `xprop` to see the wm class and name of an X client.
-                                *layout.Floating.default_float_rules,
-                                Match(wm_class='confirmreset'),  # gitk
-                                Match(wm_class='makebranch'),  # gitk
-                                Match(wm_class='maketag'),  # gitk
-                                Match(title='branchdialog'),  # gitk
-                                Match(wm_class='ssh-askpass'),  # ssh-askpass
-                                Match(title='pinentry'),  # GPG key password entry
-                                Match(wm_class='Gpick'),  # Gtk Color picker
-                                Match(wm_class='Gcolor3'),  # Gtk Color picker
-                                Match(wm_class='MEGAsync'),  # Megasync windows
-                                Match(wm_class='SpeedCrunch')
-                                ]
-                    )
+    layout.Max()
 ]
 groups = [
-            Group(name="1",label="1🐧",layout="columns"),
-            Group(name="2",label="2🐧",layout="columns"),
-            Group(name="3",label="3🐧",layout="columns"),
-            Group(name="4",label="4🎮", layout="floating"), #GAMES
-            Group(name="5",label="5🗣",layout="columns",matches=[Match(wm_class="discord")]), #Discord
-            Group(name="6",label="6🎼",layout="columns",matches=[Match(title="Spotify Premium")]), #Spotify
-            Group(name="7",label="7🔐",layout="columns",matches=[Match(wm_class="KeePassXC")]), #KeepassXC
-            Group(name="8",label="8💻",layout="max") #Virtualbox Machine
+            Group(name="1",label="1",layout="columns"),
+            Group(name="2",label="2",layout="columns"),
+            Group(name="3",label="3",layout="columns"),
+            Group(name="4",label="4",layout="columns"),
+            Group(name="5",label="5",layout="columns"),
+            Group(name="6",label="6",layout="columns"),
+            Group(name="7",label="7",layout="columns"),
+            Group(name="8",label="8",layout="columns"),
+            Group(name="9",label="9",layout="columns")
         ]
 
 for i in groups:
@@ -243,66 +243,63 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.Spacer( length=10 ),
+                widget.Spacer( length=15 ),
 ### Widget Virtual Desktops
                 widget.GroupBox(
-                    block_highlight_text_color="#8bd6ff",
+                    spacing=4,
                     disable_drag=True,
-                    highlight_method="border",
-                    borderwidth=2,
+                    use_mouse_wheel=False,
+                    highlight_method="block",
+                    active="#ffffff",
+                    inactive="#545454",
+                    block_highlight_text_color="#ffffff",
                     this_current_screen_border="#136ccb",
-                    inactive="#545454"
+                    urgent_alert_method="block",
+                    urgent_border="#ff0000",
+                    urgent_text="#ffffff"
                 ),
                 widget.Sep( **separator_default ),
-### Widget Task List 
-                widget.TextBox( text="🪟",
-                        foreground=textbox_forecolor,
-                        mouse_callbacks = { 'Button1': ShowWindowsList }
-                        ),
-                widget.TaskList(
-                        fontsize=14,
-                        margin_y=4,
-                        padding=4,
-                        spacing=4,
-                        highlight_method="block",
-                        border="#136ccb",
-                        unfocused_border="#2b2b2b",
-                        txt_floating="\uf069 ",
-                        txt_maximized="\uf077 ",
-                        txt_minimized="\uf078 "
-                        ),
+### Widget WindowName 
+                widget.WindowName(
+                    format="{name}",
+                    empty_group_string="--nincs aktív ablak--",
+                    mouse_callbacks={ 'Button1': ShowWindowsListCallback }
+                    ),
+                widget.Sep( **separator_default ),
+### Windget Media Player
+                widget.GenPollText(
+                    update_interval=0.5,
+                    func=GetMusicTitle,
+                    max_chars=80
+                    ),
                 widget.Sep( **separator_default ),
 ### Widget Layout Display
                 widget.CurrentLayout( foreground=textbox_forecolor ),
                 widget.Sep( **separator_default ),
-### Widget Clock
-                widget.TextBox(
-                                text="📆 ", foreground=textbox_forecolor,
-                                mouse_callbacks = { 'Button1': CalendarWidgetClicked }
+### Widget Date & Clock
+                widget.Clock(
+                                format="%Y.%m.%d, %A",
+                                mouse_callbacks = { 'Button1': CalendarWidgetClicked } 
                             ),
                 widget.Clock(
-                                format="%Y.%m.%d %H:%M",
-                                mouse_callbacks = { 'Button1': CalendarWidgetClicked } 
+                                format=" %H:%M",
+                                mouse_callbacks = { 'Button1': ClockWidgetClicked } 
                             ),
                 widget.Sep( **separator_default ),
 ### Widget CPU Sensor
-                widget.TextBox( text="🌡", foreground=textbox_forecolor ),
                 widget.ThermalSensor(
                                 foreground_alert="ff0000",
                                 treshold=80,
+                                update_interval=10,
                                 show_tag=False,
                                 tag_sensor="AMD TSI Addr 98h",
                                 mouse_callbacks = { 'Button1': CpuWidgetClicked } 
                             ),
                 widget.Sep( **separator_default ),
 ### Widget.Memory
-                widget.TextBox(
-                                text="🧠", foreground=textbox_forecolor,
-                                mouse_callbacks = { 'Button1': MemoryWidgetClicked }
-                            ),
                 widget.Memory(
                                 format="{MemUsed: .0f} MB",
-                                update_interval=2,
+                                update_interval=5,
                                 mouse_callbacks = { 'Button1': MemoryWidgetClicked }
                             ),
                 widget.Sep( **separator_default ),
@@ -328,11 +325,9 @@ screens = [
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
-         start=lazy.window.get_position()),
-Drag([mod], "Button3", lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
+    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    #Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
 dgroups_key_binder = None
@@ -340,9 +335,25 @@ dgroups_app_rules = []  # type: List
 follow_mouse_focus = False
 bring_front_click = True
 cursor_warp = False
-floating_layout = layouts[2]
 auto_fullscreen = True
 focus_on_window_activation = "smart"
+floating_layout = layout.Floating( border_focus='#6B4EDD', border_width=3,
+                    float_rules=[
+                                # Run the utility of `xprop` to see the wm class and name of an X client.
+                                *layout.Floating.default_float_rules,
+                                Match(wm_class='confirmreset'),  # gitk
+                                Match(wm_class='makebranch'),  # gitk
+                                Match(wm_class='maketag'),  # gitk
+                                Match(title='branchdialog'),  # gitk
+                                Match(wm_class='ssh-askpass'),  # ssh-askpass
+                                Match(title='pinentry'),  # GPG key password entry
+                                Match(wm_class='Gpick'),  # Gtk Color picker
+                                Match(wm_class='Gcolor3'),  # Gtk Color picker
+                                Match(wm_class='MEGAsync'),
+                                Match(wm_class='XClock'),
+                                Match(wm_class='Edmarketconnector'),
+                                ]
+                    )
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
