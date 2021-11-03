@@ -1,0 +1,11 @@
+diff fájl a QTile sh.py forrásfájljának javításához.
+A javítást követően a terminál ablakban futtatott programok (pl. htop)
+alkalmazkodnak az ablak méretéhez.
+Alkalmazás:
+sudo patch /usr/lib/python3.9/site-packages/libqtile/sh.py ./sh.py.diff
+
+Újra indítás szükséges.
+
+Forrás:
+https://github.com/qtile/qtile/blob/2a754bc8fe6379a2a4070e0e3e45448f11427e6a/libqtile/sh.py
+
