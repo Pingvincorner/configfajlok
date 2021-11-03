@@ -86,11 +86,11 @@ def FloatWinToFront(window):
 ###+ Egér kattintásra válaszoló függvények
 def CpuWidgetClicked():
     #qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopcpu.sh", shell=True )
-    qtile.cmd_spawn( "alacritty -e htop", shell=False )
+    qtile.cmd_spawn( myTerm+" -e htop", shell=False )
 
 def MemoryWidgetClicked():
     #qtile.cmd_spawn( HomePath + "/.config/qtile/bin/displaytopmemory.sh", shell=True )
-    qtile.cmd_spawn( "alacritty -e htop", shell=False )
+    qtile.cmd_spawn( myTerm+" -e htop", shell=False )
 
 def CalendarWidgetClicked():
     qtile.cmd_spawn( ["gsimplecal"] )
@@ -352,6 +352,7 @@ floating_layout = layout.Floating( border_focus='#6B4EDD', border_width=3,
                                 Match(wm_class='MEGAsync'),
                                 Match(wm_class='XClock'),
                                 Match(wm_class='Edmarketconnector'),
+                                Match(wm_class='SpeedCrunch'),
                                 ]
                     )
 
